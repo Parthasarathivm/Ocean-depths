@@ -1,0 +1,85 @@
+/* css/loader.css */
+#loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #000d18;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.9s var(--ease-smooth), visibility 0.9s;
+  overflow: hidden;
+}
+#loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* Ocean waves at bottom of loader */
+.loader-ocean {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 120px;
+}
+.loader-wave {
+  position: absolute; bottom: 0; left: -100%; width: 300%;
+  height: 80px; border-radius: 50%;
+  animation: waveRoll linear infinite;
+}
+.loader-wave.w1 {
+  background: rgba(0, 180, 210, 0.15);
+  animation-duration: 4s;
+}
+.loader-wave.w2 {
+  background: rgba(0, 120, 180, 0.12);
+  animation-duration: 5.5s; animation-delay: -1s;
+}
+.loader-wave.w3 {
+  background: rgba(0, 80, 140, 0.1);
+  animation-duration: 7s; animation-delay: -2s;
+}
+@keyframes waveRoll {
+  0%   { transform: translateX(0) translateY(20px); }
+  50%  { transform: translateX(33%) translateY(0); }
+  100% { transform: translateX(66%) translateY(20px); }
+}
+
+.loader-content {
+  text-align: center; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.loader-icon {
+  font-size: 3.5rem;
+  animation: iconFloat 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.6));
+}
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%       { transform: translateY(-12px) rotate(5deg); }
+}
+.loader-label {
+  font-family: var(--font-mono);
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  letter-spacing: 0.5em;
+  color: var(--glow);
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+  animation: fadeUp 0.8s 0.4s both;
+}
+.loader-sub {
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  font-style: italic;
+  color: rgba(255,255,255,0.45);
+  animation: fadeUp 0.8s 0.7s both;
+}
+.loader-bar-track {
+  width: min(280px, 75vw); height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px; overflow: hidden;
+  margin-top: 8px;
+  animation: fadeUp 0.8s 1s both;
+}
+.loader-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--glow), #00a8ff);
+  box-shadow: 0 0 12px var(--glow);
+  transition: width 0.15s linear;
+}
+.loader-percent {
+  font-family: var(--font-mono);
+  font-size: 0.75rem; letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.3);
+  animation: fadeUp 0.8s 1s both;
+}

@@ -1,0 +1,64 @@
+/* css/responsive.css */
+
+/* ── Tablet ── */
+@media (max-width: 900px) {
+  :root {
+    --section-pad-x: clamp(20px, 6vw, 60px);
+    --section-pad-y: clamp(60px, 10vh, 100px);
+  }
+  .chapter-number { font-size: 6rem; top: -20px; }
+  .creature-grid { grid-template-columns: 1fr 1fr; }
+  .final-cards   { grid-template-columns: 1fr 1fr; }
+  .vent-feature  { grid-template-columns: 140px 1fr; gap: 24px; }
+  .intro-stats   { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  #depthMeter { right: 8px; }
+  #chapterNav { left: 8px; }
+  .chapter-number { display: none; }
+  .creature-grid { grid-template-columns: 1fr; }
+  .bio-orbs { grid-template-columns: 1fr 1fr; }
+  .midnight-layout { grid-template-columns: 1fr; }
+  .vent-feature { grid-template-columns: 1fr; text-align: center; }
+  .vent-visual { height: 140px; }
+  .intro-stats { grid-template-columns: 1fr 1fr; }
+  .final-cards { grid-template-columns: 1fr 1fr; }
+  .pv-bar-name { min-width: 90px; font-size: 0.72rem; }
+  .abyss-layout { grid-template-columns: 1fr; }
+  .sc-header { flex-wrap: wrap; }
+  .sc-badge { margin-left: 0; }
+  .hero-title { font-size: clamp(3rem, 16vw, 5rem); }
+  .phenomenon-box { flex-direction: column; }
+  #cursor { display: none; }
+  body { cursor: auto; }
+  button, a { cursor: pointer; }
+}
+
+/* ── Large screens ── */
+@media (min-width: 1400px) {
+  :root { --content-max: 1200px; }
+}
+
+/* ── Very small screens ── */
+@media (max-width: 380px) {
+  .fact-chip { font-size: 0.58rem; padding: 6px 12px; }
+  .bio-orbs { grid-template-columns: 1fr 1fr; }
+  .final-cards { grid-template-columns: 1fr; }
+}
+
+/* ── Touch devices (no hover) ── */
+@media (hover: none) {
+  .c-card:hover { transform: none; }
+  .is-card:hover { transform: none; }
+  .fc-card:hover { transform: none; }
+}
+
+/* ── Print (basic) ── */
+@media print {
+  #loader, #cursor, #depthMeter, #chapterNav,
+  #scrollProgress, #bubblesLayer, #particleCanvas { display: none; }
+  .chapter { min-height: auto; page-break-inside: avoid; }
+  body { background: white !important; color: black !important; }
+}

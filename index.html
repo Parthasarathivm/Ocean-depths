@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ocean Depths — An immersive scroll-driven deep sea story experience" />
+  <title>Ocean Depths — A Deep Sea Story</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/loader.css" />
+  <link rel="stylesheet" href="css/ui.css" />
+  <link rel="stylesheet" href="css/sections.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════
+       LOADER
+  ═══════════════════════════════════════════ -->
+  <div id="loader" role="status" aria-label="Loading Ocean Depths">
+    <div class="loader-ocean">
+      <div class="loader-wave w1"></div>
+      <div class="loader-wave w2"></div>
+      <div class="loader-wave w3"></div>
+    </div>
+    <div class="loader-content">
+      <div class="loader-icon">🌊</div>
+      <p class="loader-label">OCEAN DEPTHS</p>
+      <p class="loader-sub">A Deep Sea Story</p>
+      <div class="loader-bar-track">
+        <div class="loader-bar-fill" id="loaderBar"></div>
+      </div>
+      <p class="loader-percent" id="loaderPct">0%</p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PERSISTENT UI
+  ═══════════════════════════════════════════ -->
+  <div id="cursor" aria-hidden="true">
+    <div class="cursor-ring"></div>
+    <div class="cursor-dot"></div>
+  </div>
+
+  <!-- Depth Meter -->
+  <aside id="depthMeter" aria-label="Depth indicator">
+    <div class="dm-label">DEPTH</div>
+    <div class="dm-value" id="dmValue">0m</div>
+    <div class="dm-bar-track">
+      <div class="dm-bar-fill" id="dmFill"></div>
+      <div class="dm-zones">
+        <span style="top:0%"    title="Surface"></span>
+        <span style="top:20%"   title="Twilight"></span>
+        <span style="top:40%"   title="Midnight"></span>
+        <span style="top:60%"   title="Abyss"></span>
+        <span style="top:80%"   title="Hadal"></span>
+      </div>
+    </div>
+    <div class="dm-max">11km</div>
+  </aside>
+
+  <!-- Chapter Nav -->
+  <nav id="chapterNav" aria-label="Chapter navigation">
+    <button class="ch-dot active" data-ch="0" aria-label="Hero — The Call">
+      <span class="ch-tooltip">Hero · The Call</span>
+    </button>
+    <button class="ch-dot" data-ch="1" aria-label="Introduction — Descent">
+      <span class="ch-tooltip">Introduction · Descent</span>
+    </button>
+    <button class="ch-dot" data-ch="2" aria-label="Exploration — Twilight">
+      <span class="ch-tooltip">Exploration · Twilight</span>
+    </button>
+    <button class="ch-dot" data-ch="3" aria-label="Exploration — Midnight">
+      <span class="ch-tooltip">Exploration · Midnight</span>
+    </button>
+    <button class="ch-dot" data-ch="4" aria-label="Insight — The Abyss">
+      <span class="ch-tooltip">Insight · The Abyss</span>
+    </button>
+    <button class="ch-dot" data-ch="5" aria-label="Conclusion — Hadal">
+      <span class="ch-tooltip">Conclusion · Hadal</span>
+    </button>
+  </nav>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scrollProgress" aria-hidden="true">
+    <div id="scrollFill"></div>
+  </div>
+
+  <!-- Ambient Bubbles -->
+  <div id="bubblesLayer" aria-hidden="true"></div>
+
+  <!-- Particle Canvas -->
+  <canvas id="particleCanvas" aria-hidden="true"></canvas>
+
+
+  <!-- ════════════════════════════════════════
+       CHAPTER 0 · HERO — THE CALL
+  ═══════════════════════════════════════════ -->
+  <section id="ch0" class="chapter chapter-hero" data-bg="hero" aria-labelledby="hero-title">
+
+    <div class="hero-bg-layers" aria-hidden="true">
+      <div class="hbl hbl-1"></div>
+      <div class="hbl hbl-2"></div>
+      <div class="hbl hbl-3"></div>
+      <!-- SVG Caustic Light Rays -->
+      <svg class="caustics" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="rayGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(160,230,255,0.25)"/>
+            <stop offset="100%" stop-color="rgba(160,230,255,0)"/>
+          </linearGradient>
+          <filter id="blur4"><feGaussianBlur stdDeviation="4"/></filter>
+        </defs>
+        <polygon class="ray r1" points="580,0 620,0 700,800 500,800" fill="url(#rayGrad)" filter="url(#blur4)"/>
+        <polygon class="ray r2" points="400,0 440,0 380,800 260,800" fill="url(#rayGrad)" filter="url(#blur4)"/>
+        <polygon class="ray r3" points="750,0 800,0 950,800 820,800" fill="url(#rayGrad)" filter="url(#blur4)"/>
+        <polygon class="ray r4" points="200,0 240,0 130,800 60,800"  fill="url(#rayGrad)" filter="url(#blur4)"/>
+        <polygon class="ray r5" points="900,0 960,0 1140,800 1060,800" fill="url(#rayGrad)" filter="url(#blur4)"/>
+      </svg>
+      <!-- Animated fish school -->
+      <div class="fish-school" aria-hidden="true">
+        <span class="fish f1">🐟</span><span class="fish f2">🐠</span>
+        <span class="fish f3">🐟</span><span class="fish f4">🐡</span>
+        <span class="fish f5">🐟</span><span class="fish f6">🐠</span>
+      </div>
+      <!-- Surface coral silhouettes -->
+      <div class="coral-floor" aria-hidden="true">
+        <svg viewBox="0 0 1400 200" preserveAspectRatio="none">
+          <path d="M0,200 L0,160 Q30,120 60,150 Q90,180 120,140 Q150,100 180,130 Q210,160 240,120 Q270,80 300,110 Q330,140 360,100 Q390,60 420,90 Q450,120 480,80 Q510,40 540,70 Q570,100 600,60 Q630,20 660,50 Q690,80 720,50 Q750,20 780,50 Q810,80 840,50 Q870,20 900,60 Q930,100 960,70 Q990,40 1020,80 Q1050,120 1080,90 Q1110,60 1140,100 Q1170,140 1200,110 Q1230,80 1260,120 Q1290,160 1320,130 Q1350,100 1380,140 L1400,160 L1400,200 Z" fill="rgba(0,40,60,0.8)"/>
+          <path d="M0,200 L0,175 Q50,155 100,170 Q150,185 200,165 Q250,145 300,168 Q350,191 400,172 Q450,153 500,175 Q550,197 600,178 Q650,159 700,180 Q750,201 800,182 Q850,163 900,185 Q950,207 1000,188 Q1050,169 1100,190 Q1150,211 1200,192 Q1250,173 1300,195 L1400,185 L1400,200 Z" fill="rgba(0,20,40,0.9)"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="chapter-content hero-content">
+      <div class="hero-badge reveal">CHAPTER ONE</div>
+      <h1 class="hero-title reveal" id="hero-title">
+        <span class="ht-line">The</span>
+        <span class="ht-line italic glow-text">Ocean</span>
+        <span class="ht-line">Calls</span>
+      </h1>
+      <p class="hero-tagline reveal">A story told in five thousand fathoms</p>
+      <p class="hero-body reveal">
+        Seventy-one percent of our planet is covered by water.
+        Yet we have explored less than twenty percent of the ocean.
+        Below the surface lies a world of eternal night, crushing silence,
+        and life that defies every boundary we thought biology had.
+        <br><br>
+        This is your invitation to dive deeper than light can follow.
+      </p>
+      <div class="hero-scroll-cue reveal" aria-hidden="true">
+        <div class="scroll-line"></div>
+        <span>SCROLL TO DIVE</span>
+      </div>
+    </div>
+
+    <!-- Wave transition bottom -->
+    <div class="wave-transition" aria-hidden="true">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,60 C180,100 360,20 540,60 C720,100 900,20 1080,60 C1260,100 1380,50 1440,60 L1440,120 L0,120 Z" fill="var(--twilight-deep)"/>
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       CHAPTER 1 · INTRODUCTION — THE DESCENT
+  ═══════════════════════════════════════════ -->
+  <section id="ch1" class="chapter chapter-intro" data-bg="intro" aria-labelledby="intro-title">
+
+    <div class="chapter-content intro-content">
+      <div class="chapter-label reveal">INTRODUCTION</div>
+      <div class="chapter-number reveal" aria-hidden="true">II</div>
+      <h2 class="chapter-title reveal" id="intro-title">
+        The <em>Descent</em><br>Begins
+      </h2>
+      <p class="chapter-lead reveal">
+        You take your last breath of surface air. The water closes above you like a curtain.
+        The world above — its noise, its light, its chaos — fades instantly.
+        Down here, time moves differently.
+      </p>
+
+      <!-- Story passage -->
+      <div class="story-passage reveal">
+        <div class="passage-quote">
+          "The sea, once it casts its spell, holds one in its net of wonder forever."
+        </div>
+        <div class="passage-author">— Jacques Cousteau</div>
+      </div>
+
+      <!-- Depth timeline -->
+      <div class="depth-timeline reveal">
+        <div class="dt-title">YOUR DIVE PROFILE</div>
+        <div class="dt-track">
+          <div class="dt-line"></div>
+          <div class="dt-point dp1">
+            <div class="dp-dot"></div>
+            <div class="dp-label">
+              <span class="dp-depth">0m</span>
+              <span class="dp-name">Surface</span>
+            </div>
+          </div>
+          <div class="dt-point dp2">
+            <div class="dp-dot"></div>
+            <div class="dp-label">
+              <span class="dp-depth">200m</span>
+              <span class="dp-name">Twilight Zone</span>
+            </div>
+          </div>
+          <div class="dt-point dp3">
+            <div class="dp-dot"></div>
+            <div class="dp-label">
+              <span class="dp-depth">1,000m</span>
+              <span class="dp-name">Midnight Zone</span>
+            </div>
+          </div>
+          <div class="dt-point dp4">
+            <div class="dp-dot"></div>
+            <div class="dp-label">
+              <span class="dp-depth">4,000m</span>
+              <span class="dp-name">Abyss</span>
+            </div>
+          </div>
+          <div class="dt-point dp5">
+            <div class="dp-dot"></div>
+            <div class="dp-label">
+              <span class="dp-depth">11,034m</span>
+              <span class="dp-name">Hadal · Challenger Deep</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intro stats row -->
+      <div class="intro-stats reveal">
+        <div class="is-card">
+          <span class="is-num">71%</span>
+          <span class="is-label">Of Earth covered by ocean</span>
+        </div>
+        <div class="is-card">
+          <span class="is-num">&lt;20%</span>
+          <span class="is-label">Of ocean explored by humans</span>
+        </div>
+        <div class="is-card">
+          <span class="is-num">8.7M</span>
+          <span class="is-label">Estimated ocean species</span>
+        </div>
+        <div class="is-card">
+          <span class="is-num">11km</span>
+          <span class="is-label">Deepest point on Earth</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wave-transition bot" aria-hidden="true">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,40 C240,100 480,0 720,60 C960,120 1200,10 1440,50 L1440,120 L0,120 Z" fill="var(--midnight-start)"/>
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       CHAPTER 2 · EXPLORATION — TWILIGHT ZONE
+  ═══════════════════════════════════════════ -->
+  <section id="ch2" class="chapter chapter-twilight" data-bg="twilight" aria-labelledby="twilight-title">
+
+    <div class="chapter-content">
+      <div class="chapter-label reveal">EXPLORATION · PART ONE</div>
+      <div class="chapter-number reveal" aria-hidden="true">III</div>
+      <h2 class="chapter-title reveal" id="twilight-title">
+        The <em>Twilight</em><br>Zone
+      </h2>
+      <p class="depth-stamp reveal">200m – 1,000m</p>
+
+      <!-- Narrative -->
+      <div class="narrative-block reveal">
+        <p>
+          Light no longer reaches here in the way you know it. The sun's rays, scattered and swallowed
+          by a hundred metres of saltwater, arrive only as a faint blue memory.
+          You are in the <strong>mesopelagic zone</strong> — a realm of perpetual twilight where day and night
+          are suggestions rather than facts.
+        </p>
+        <p>
+          Temperature plunges. Your breath clouds in the cold. Around you, creatures begin to emerge —
+          shapes you have no words for, lit by lights they carry inside their own bodies.
+          Welcome to the in-between.
+        </p>
+      </div>
+
+      <!-- Creature Cards -->
+      <div class="creature-showcase">
+        <h3 class="showcase-title reveal">Inhabitants of the Twilight</h3>
+        <div class="creature-grid">
+
+          <article class="c-card reveal reveal-d1" tabindex="0" aria-label="Moon Jellyfish">
+            <div class="c-card-glow"></div>
+            <div class="c-card-emoji">🪼</div>
+            <div class="c-card-body">
+              <h4 class="c-card-name">Moon Jellyfish</h4>
+              <p class="c-card-latin">Aurelia aurita</p>
+              <p class="c-card-fact">Exists without a brain, heart, or lungs. Has survived five mass extinctions. Pulses with a rhythm older than the dinosaurs.</p>
+              <div class="c-card-depth">
+                <span class="cd-label">FOUND AT</span>
+                <span class="cd-val">0 – 400m</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="c-card reveal reveal-d2" tabindex="0" aria-label="Giant Squid">
+            <div class="c-card-glow"></div>
+            <div class="c-card-emoji">🦑</div>
+            <div class="c-card-body">
+              <h4 class="c-card-name">Giant Squid</h4>
+              <p class="c-card-latin">Architeuthis dux</p>
+              <p class="c-card-fact">Eyes the size of dinner plates — the largest of any living animal. Can reach 13 metres. Was thought mythical until the 1870s.</p>
+              <div class="c-card-depth">
+                <span class="cd-label">FOUND AT</span>
+                <span class="cd-val">200 – 1,000m</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="c-card reveal reveal-d3" tabindex="0" aria-label="Lanternfish">
+            <div class="c-card-glow"></div>
+            <div class="c-card-emoji">🐟</div>
+            <div class="c-card-body">
+              <h4 class="c-card-name">Lanternfish</h4>
+              <p class="c-card-latin">Myctophidae family</p>
+              <p class="c-card-fact">Makes the largest daily migration on Earth — rising to feed at night, descending at dawn. Billions travel 600m every single day.</p>
+              <div class="c-card-depth">
+                <span class="cd-label">FOUND AT</span>
+                <span class="cd-val">300 – 1,500m</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="c-card reveal reveal-d4" tabindex="0" aria-label="Cookiecutter Shark">
+            <div class="c-card-glow"></div>
+            <div class="c-card-emoji">🦈</div>
+            <div class="c-card-body">
+              <h4 class="c-card-name">Cookiecutter Shark</h4>
+              <p class="c-card-latin">Isistius brasiliensis</p>
+              <p class="c-card-fact">Bites perfect circular plugs from whales, dolphins — and even nuclear submarines. Small body, catastrophic impact.</p>
+              <div class="c-card-depth">
+                <span class="cd-label">FOUND AT</span>
+                <span class="cd-val">85 – 3,500m</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Twilight phenomenon -->
+      <div class="phenomenon-box reveal">
+        <div class="ph-icon">🌊</div>
+        <div class="ph-content">
+          <h4 class="ph-title">The Deep Scattering Layer</h4>
+          <p class="ph-desc">Every night, billions of sea creatures rise from the twilight zone to feed near the surface. Early sonar operators thought they had found the ocean floor — it moved. This living layer is the largest daily migration on the planet.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wave-transition bot" aria-hidden="true">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,80 C360,20 720,110 1080,40 C1260,10 1380,80 1440,60 L1440,120 L0,120 Z" fill="var(--midnight-mid)"/>
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       CHAPTER 3 · EXPLORATION — MIDNIGHT ZONE
+  ═══════════════════════════════════════════ -->
+  <section id="ch3" class="chapter chapter-midnight" data-bg="midnight" aria-labelledby="midnight-title">
+
+    <div class="chapter-content midnight-layout">
+      <div class="midnight-left">
+        <div class="chapter-label reveal">EXPLORATION · PART TWO</div>
+        <div class="chapter-number reveal" aria-hidden="true">IV</div>
+        <h2 class="chapter-title reveal" id="midnight-title">
+          The <em>Midnight</em><br>Zone
+        </h2>
+        <p class="depth-stamp reveal">1,000m – 4,000m</p>
+
+        <div class="narrative-block reveal">
+          <p>
+            The last photon of sunlight dies here. There is no day. There is no night.
+            There is only an eternal, crushing, freezing dark that has never known the concept of morning.
+          </p>
+          <p>
+            And yet the darkness is not empty. It <em>glows.</em> Flashes. Pulses.
+            Eighty percent of deep-sea animals produce their own light —
+            a phenomenon called <strong>bioluminescence</strong>.
+            The midnight zone is not dark. It is lit by a million tiny stars that are alive.
+          </p>
+        </div>
+
+        <div class="story-passage reveal">
+          <div class="passage-quote">
+            "In the deep sea, the only light is the light you make yourself."
+          </div>
+        </div>
+      </div>
+
+      <div class="midnight-right">
+        <!-- Bioluminescence showcase -->
+        <div class="bio-showcase reveal">
+          <h3 class="bio-showcase-title">Bioluminescence</h3>
+          <p class="bio-showcase-sub">Living light. 80% of deep sea animals produce it.</p>
+
+          <div class="bio-orbs">
+            <div class="bio-orb bo-cyan" tabindex="0">
+              <div class="bo-core"></div>
+              <div class="bo-ring r1"></div>
+              <div class="bo-ring r2"></div>
+              <div class="bo-info">
+                <span class="bo-name">Cyan Flash</span>
+                <span class="bo-use">Luring prey</span>
+              </div>
+            </div>
+            <div class="bio-orb bo-green" tabindex="0">
+              <div class="bo-core"></div>
+              <div class="bo-ring r1"></div>
+              <div class="bo-ring r2"></div>
+              <div class="bo-info">
+                <span class="bo-name">Green Pulse</span>
+                <span class="bo-use">Startling predators</span>
+              </div>
+            </div>
+            <div class="bio-orb bo-amber" tabindex="0">
+              <div class="bo-core"></div>
+              <div class="bo-ring r1"></div>
+              <div class="bo-ring r2"></div>
+              <div class="bo-info">
+                <span class="bo-name">Red Spotlight</span>
+                <span class="bo-use">Secret hunting</span>
+              </div>
+            </div>
+            <div class="bio-orb bo-violet" tabindex="0">
+              <div class="bo-core"></div>
+              <div class="bo-ring r1"></div>
+              <div class="bo-ring r2"></div>
+              <div class="bo-info">
+                <span class="bo-name">Violet Signal</span>
+                <span class="bo-use">Mating display</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Anglerfish spotlight -->
+        <div class="spotlight-card reveal">
+          <div class="sc-header">
+            <span class="sc-emoji">🎣</span>
+            <div>
+              <h4 class="sc-name">Anglerfish</h4>
+              <p class="sc-latin">Lophiiformes order</p>
+            </div>
+            <span class="sc-badge">APEX PREDATOR</span>
+          </div>
+          <p class="sc-story">
+            The female hangs her bioluminescent lure — a glowing beacon on a spine above her mouth —
+            in the pitch darkness and waits. Any creature drawn to the light meets teeth angled
+            inward so nothing escapes. When a male finds her, he bites into her skin and never lets go.
+            His body fuses with hers. They share blood, organs, and eventually identity.
+            He becomes part of her. Forever.
+          </p>
+          <div class="sc-stats">
+            <div class="sc-stat"><span class="ss-v">2m</span><span class="ss-l">Max size</span></div>
+            <div class="sc-stat"><span class="ss-v">1,000m</span><span class="ss-l">Depth found</span></div>
+            <div class="sc-stat"><span class="ss-v">Forever</span><span class="ss-l">Male attachment</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="wave-transition bot" aria-hidden="true">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,50 C300,110 600,0 900,70 C1100,120 1300,30 1440,50 L1440,120 L0,120 Z" fill="var(--abyss-start)"/>
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       CHAPTER 4 · INSIGHT — THE ABYSS
+  ═══════════════════════════════════════════ -->
+  <section id="ch4" class="chapter chapter-abyss" data-bg="abyss" aria-labelledby="abyss-title">
+
+    <div class="chapter-content">
+      <div class="chapter-label reveal">INSIGHT</div>
+      <div class="chapter-number reveal" aria-hidden="true">V</div>
+      <h2 class="chapter-title reveal" id="abyss-title">
+        The <em>Abyssal</em><br>Plain
+      </h2>
+      <p class="depth-stamp reveal">4,000m – 6,000m</p>
+
+      <div class="narrative-block wide reveal">
+        <p>
+          The abyssal plain covers <strong>60% of Earth's entire surface</strong> — making it the single largest
+          habitat on the planet. Yet we know more about the surface of Mars than we know about what
+          lives here. The pressure is 600 atmospheres. The temperature hovers at 2°C.
+          And in this impossible place, life has found a way — not despite the conditions,
+          but <em>because</em> of them.
+        </p>
+      </div>
+
+      <!-- Hydrothermal vent feature -->
+      <div class="vent-feature reveal">
+        <div class="vent-visual" aria-hidden="true">
+          <div class="vent-base">
+            <svg viewBox="0 0 200 300" fill="none">
+              <path d="M80,300 L60,200 Q55,180 70,170 L90,160 Q100,155 110,160 L130,170 Q145,180 140,200 L120,300 Z" fill="rgba(80,40,20,0.8)" stroke="rgba(255,100,30,0.3)" stroke-width="1"/>
+              <path d="M85,300 L70,220 Q68,205 78,200 L100,195 L122,200 Q132,205 130,220 L115,300 Z" fill="rgba(60,30,10,0.9)"/>
+            </svg>
+          </div>
+          <div class="vent-smoke">
+            <div class="vs vs1"></div>
+            <div class="vs vs2"></div>
+            <div class="vs vs3"></div>
+          </div>
+          <div class="vent-glow"></div>
+        </div>
+        <div class="vent-info">
+          <h3 class="vent-title">Hydrothermal Vents</h3>
+          <p class="vent-desc">
+            In 1977, scientists expecting barren seafloor found something that shook the foundations of biology:
+            thriving ecosystems around volcanic vents, utterly independent of sunlight.
+            Tube worms 2 metres tall. Giant clams. Shrimp with no eyes.
+            All powered by <strong>chemosynthesis</strong> — turning toxic hydrogen sulphide into life.
+          </p>
+          <p class="vent-desc">
+            This discovery meant life could exist without sunlight. And if it could happen here —
+            it could happen anywhere in the universe.
+          </p>
+          <div class="vent-stats">
+            <div class="vs-item">
+              <span class="vsi-val">400°C</span>
+              <span class="vsi-label">Vent temperature</span>
+            </div>
+            <div class="vs-item">
+              <span class="vsi-val">1977</span>
+              <span class="vsi-label">Year of discovery</span>
+            </div>
+            <div class="vs-item">
+              <span class="vsi-val">500+</span>
+              <span class="vsi-label">Species at each vent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordions: Abyss creatures -->
+      <div class="accordion-section reveal">
+        <h3 class="accordion-title">Strange Inhabitants of the Deep</h3>
+        <div class="accordion-list" role="list">
+
+          <div class="acc-item" role="listitem">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-icon">🐙</span>
+              <span class="acc-name">Dumbo Octopus</span>
+              <span class="acc-depth">up to 7,000m</span>
+              <span class="acc-arrow">▾</span>
+            </button>
+            <div class="acc-body">
+              <p>Named for its ear-like fins that it flaps to swim — resembling the Disney elephant. The deepest-known octopus, found at 7,000 metres. Unlike other octopuses, it swallows prey whole. It has no ink sac — there are no predators to hide from at this depth.</p>
+            </div>
+          </div>
+
+          <div class="acc-item" role="listitem">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-icon">🐍</span>
+              <span class="acc-name">Pelican Eel</span>
+              <span class="acc-depth">500 – 3,000m</span>
+              <span class="acc-arrow">▾</span>
+            </button>
+            <div class="acc-body">
+              <p>Its mouth is larger than its entire body. It can open its jaw to form a pouch the size of a bucket, engulfing fish twice its own size. A bioluminescent pink tail tip acts as a lure. When not hunting, the tail glows red — a frequency most deep-sea animals cannot even see.</p>
+            </div>
+          </div>
+
+          <div class="acc-item" role="listitem">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-icon">👁️</span>
+              <span class="acc-name">Barreleye Fish</span>
+              <span class="acc-depth">600 – 800m</span>
+              <span class="acc-arrow">▾</span>
+            </button>
+            <div class="acc-body">
+              <p>Its head is transparent — a fluid-filled dome revealing two glowing green tubular eyes that rotate to look upward through the dome. The eyes detect the silhouettes of prey against the faint surface light far above. What looks like its "eyes" on its face are actually nostrils.</p>
+            </div>
+          </div>
+
+          <div class="acc-item" role="listitem">
+            <button class="acc-header" aria-expanded="false">
+              <span class="acc-icon">🪲</span>
+              <span class="acc-name">Giant Isopod</span>
+              <span class="acc-depth">170 – 2,500m</span>
+              <span class="acc-arrow">▾</span>
+            </button>
+            <div class="acc-body">
+              <p>A woodlouse scaled up to the size of a football — 76cm long. It can survive years without eating. Its armour-plated exoskeleton withstands the crushing pressure. When threatened, it rolls into a perfect sphere. One captive isopod refused to eat for five years before dying of unknown causes.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Pressure visualiser -->
+      <div class="pressure-viz reveal">
+        <h3 class="pv-title">Pressure Comparison</h3>
+        <div class="pv-bars">
+          <div class="pv-bar-item">
+            <div class="pv-bar-track">
+              <div class="pv-bar-fill" style="--target-width: 1%" data-label="1 ATM"></div>
+            </div>
+            <span class="pv-bar-name">Surface</span>
+          </div>
+          <div class="pv-bar-item">
+            <div class="pv-bar-track">
+              <div class="pv-bar-fill" style="--target-width: 20%" data-label="200 ATM"></div>
+            </div>
+            <span class="pv-bar-name">Midnight Zone</span>
+          </div>
+          <div class="pv-bar-item">
+            <div class="pv-bar-track">
+              <div class="pv-bar-fill" style="--target-width: 55%" data-label="600 ATM"></div>
+            </div>
+            <span class="pv-bar-name">Abyss</span>
+          </div>
+          <div class="pv-bar-item">
+            <div class="pv-bar-track">
+              <div class="pv-bar-fill" style="--target-width: 100%" data-label="1,086 ATM"></div>
+            </div>
+            <span class="pv-bar-name">Challenger Deep</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wave-transition bot" aria-hidden="true">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,60 C200,10 500,110 800,50 C1100,0 1300,90 1440,60 L1440,120 L0,120 Z" fill="var(--hadal-bg)"/>
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       CHAPTER 5 · CONCLUSION — HADAL / THE END
+  ═══════════════════════════════════════════ -->
+  <section id="ch5" class="chapter chapter-hadal" data-bg="hadal" aria-labelledby="hadal-title">
+
+    <!-- Particle stars bg -->
+    <div class="hadal-stars" aria-hidden="true" id="hadalStars"></div>
+
+    <div class="chapter-content hadal-content">
+      <div class="chapter-label reveal">CONCLUSION</div>
+      <div class="chapter-number reveal" aria-hidden="true">VI</div>
+      <h2 class="chapter-title hadal-title reveal" id="hadal-title">
+        <span>The</span>
+        <em>Deepest</em>
+        <span>Place</span>
+        <span>on Earth</span>
+      </h2>
+      <p class="depth-stamp reveal">11,034m · Challenger Deep · Mariana Trench</p>
+
+      <!-- Final narrative -->
+      <div class="final-narrative reveal">
+        <p>
+          You have reached the bottom of the world.
+          The Challenger Deep, at 11,034 metres, lies in the Mariana Trench
+          in the western Pacific Ocean. Mount Everest could be placed here
+          and still have more than a mile of water above it.
+        </p>
+        <p>
+          The pressure here is <strong>1,086 times</strong> what you feel standing on the surface.
+          It is −2°C. There has never been sunlight here.
+          There will never be sunlight here.
+        </p>
+        <p>
+          Yet in 2012, filmmaker James Cameron descended alone to this exact spot.
+          He found life. Amphipods. Microbes in the sediment. The ocean does not give up easily.
+        </p>
+        <p class="final-em">
+          We have sent twelve people to the Moon. Fewer than twenty have visited Challenger Deep.
+          The deep ocean remains the last great unexplored frontier on our own planet.
+        </p>
+      </div>
+
+      <!-- Final data cards -->
+      <div class="final-cards reveal">
+        <div class="fc-card">
+          <div class="fc-icon">🏔️</div>
+          <div class="fc-stat">11,034m</div>
+          <div class="fc-label">Challenger Deep depth</div>
+          <div class="fc-note">Deeper than Everest is tall</div>
+        </div>
+        <div class="fc-card">
+          <div class="fc-icon">⚡</div>
+          <div class="fc-stat">1,086 ATM</div>
+          <div class="fc-label">Water pressure</div>
+          <div class="fc-note">Crushes steel containers</div>
+        </div>
+        <div class="fc-card">
+          <div class="fc-icon">🌡️</div>
+          <div class="fc-stat">−2°C</div>
+          <div class="fc-label">Water temperature</div>
+          <div class="fc-note">Near freezing always</div>
+        </div>
+        <div class="fc-card">
+          <div class="fc-icon">🧬</div>
+          <div class="fc-stat">Life</div>
+          <div class="fc-label">Still found here</div>
+          <div class="fc-note">Defying all expectations</div>
+        </div>
+      </div>
+
+      <!-- Closing statement -->
+      <div class="closing-statement reveal">
+        <div class="cs-line"></div>
+        <blockquote class="cs-quote">
+          "The ocean is a central image. It is the symbolism of a great journey."
+        </blockquote>
+        <cite class="cs-author">— Enya</cite>
+        <div class="cs-line"></div>
+      </div>
+
+      <!-- Fact chips -->
+      <div class="fact-chips reveal">
+        <span class="fact-chip" tabindex="0">Less explored than Mars</span>
+        <span class="fact-chip" tabindex="0">12 humans on Moon</span>
+        <span class="fact-chip" tabindex="0">&lt;20 at Challenger Deep</span>
+        <span class="fact-chip" tabindex="0">Life at every depth</span>
+        <span class="fact-chip" tabindex="0">New species found annually</span>
+        <span class="fact-chip" tabindex="0">95% still unmapped</span>
+      </div>
+
+      <!-- Return CTA -->
+      <div class="hadal-cta reveal">
+        <p class="cta-label">You have completed the dive.</p>
+        <a href="#ch0" class="cta-button" aria-label="Return to the surface">
+          <span>↑ ASCEND TO SURFACE</span>
+        </a>
+        <p class="cta-sub">The ocean will always call you back.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Scripts -->
+  <script src="js/loader.js"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/bubbles.js"></script>
+  <script src="js/scroll.js"></script>
+  <script src="js/accordion.js"></script>
+  <script src="js/particles.js"></script>
+</body>
+</html>

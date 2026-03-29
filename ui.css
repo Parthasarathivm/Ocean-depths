@@ -1,0 +1,154 @@
+/* css/ui.css */
+
+/* ── Custom Cursor ── */
+#cursor {
+  position: fixed; pointer-events: none; z-index: 9000;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+}
+.cursor-ring {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid rgba(0, 240, 255, 0.6);
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.25s var(--ease-spring),
+              height 0.25s var(--ease-spring),
+              border-color 0.2s, background 0.2s;
+}
+.cursor-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--glow);
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px var(--glow);
+}
+body.cursor-hover .cursor-ring {
+  width: 50px; height: 50px;
+  background: rgba(0, 240, 255, 0.08);
+  border-color: var(--glow);
+}
+
+/* ── Depth Meter ── */
+#depthMeter {
+  position: fixed; right: clamp(14px, 3vw, 30px); top: 50%;
+  transform: translateY(-50%);
+  z-index: 500;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px;
+}
+.dm-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem; letter-spacing: 0.25em;
+  color: rgba(255,255,255,0.35);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+.dm-value {
+  font-family: var(--font-mono);
+  font-size: clamp(0.65rem, 1.3vw, 0.8rem);
+  color: var(--glow);
+  font-weight: 500;
+  text-shadow: 0 0 10px rgba(0,240,255,0.5);
+  min-width: 45px; text-align: center;
+}
+.dm-bar-track {
+  width: 3px; height: clamp(100px, 14vh, 160px);
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px; position: relative; overflow: hidden;
+}
+.dm-bar-fill {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 0%;
+  background: linear-gradient(to top, var(--glow), rgba(0,240,255,0.3));
+  border-radius: 3px;
+  transition: height 0.15s linear;
+  box-shadow: 0 0 6px var(--glow);
+}
+.dm-zones {
+  position: absolute; inset: 0;
+}
+.dm-zones span {
+  position: absolute; left: -5px;
+  width: 5px; height: 1px;
+  background: rgba(255,255,255,0.2);
+}
+.dm-max {
+  font-family: var(--font-mono);
+  font-size: 0.5rem; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ── Chapter Nav Dots ── */
+#chapterNav {
+  position: fixed; left: clamp(14px, 3vw, 28px); top: 50%;
+  transform: translateY(-50%);
+  z-index: 500;
+  display: flex; flex-direction: column; gap: 14px;
+  align-items: center;
+}
+.ch-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: transparent;
+  position: relative;
+  transition: all 0.3s var(--ease-spring);
+}
+.ch-dot:hover, .ch-dot.active {
+  border-color: var(--glow);
+  background: var(--glow);
+  box-shadow: 0 0 10px var(--glow);
+  transform: scale(1.4);
+}
+.ch-tooltip {
+  position: absolute; left: calc(100% + 12px); top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,10,20,0.9);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.8);
+  font-family: var(--font-mono);
+  font-size: 0.6rem; letter-spacing: 0.1em;
+  padding: 5px 10px; border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.ch-dot:hover .ch-tooltip { opacity: 1; }
+
+/* ── Scroll Progress Bar (top) ── */
+#scrollProgress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 2px; z-index: 500;
+  background: rgba(255,255,255,0.05);
+}
+#scrollFill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--glow), #a855f7);
+  box-shadow: 0 0 8px var(--glow);
+  transition: width 0.1s linear;
+}
+
+/* ── Bubbles ── */
+#bubblesLayer {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 2; overflow: hidden;
+}
+.bubble {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  animation: bubbleRise linear infinite;
+  pointer-events: none;
+}
+@keyframes bubbleRise {
+  0%   { transform: translateY(0)    translateX(0)    scale(0.5); opacity: 0.7; }
+  40%  { transform: translateY(-40vh) translateX(15px)  scale(0.8); opacity: 0.35; }
+  100% { transform: translateY(-110vh) translateX(-10px) scale(1.1); opacity: 0; }
+}
+
+/* ── Particle Canvas ── */
+#particleCanvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 1;
+  opacity: 0; transition: opacity 1.2s ease;
+}
+#particleCanvas.visible { opacity: 1; }
